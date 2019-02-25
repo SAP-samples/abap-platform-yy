@@ -14,17 +14,6 @@
     <UNICODE>X</UNICODE>
     <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
-   <ATTRIBUTES>
-    <item>
-     <CMPNAME>MY_STRUCTURE</CMPNAME>
-    </item>
-    <item>
-     <CMPNAME>MY_NAME</CMPNAME>
-    </item>
-    <item>
-     <CMPNAME>MY_TYPE</CMPNAME>
-    </item>
-   </ATTRIBUTES>
   </asx:values>
  </asx:abap>
 </abapGit>
