@@ -9,7 +9,7 @@ Please make sure to fulfill the following requirements:
 * You have access to an SAP Cloud Platform ABAP Environment instance (see [here](https://blogs.sap.com/2018/09/04/sap-cloud-platform-abap-environment) for additional information)
 * You have downloaded and installed [ABAP Development Tools for SAP NetWeaver](https://tools.hana.ondemand.com/#abap) (ADT)
 * You have created an ABAP Cloud Project in ADT that allows you to access your SAP Cloud Platform ABAP Environment instance
-* You have installed the [abapGit](https://github.com/abapGit/eclipse.abapgit.org) plug-in for Eclipse via the updatesite `http://eclipse.abapgit.org/updatesite/`
+* You have installed the [abapGit](https://github.com/abapGit/eclipse.abapgit.org) plug-in for Eclipse [via the updatesite](https://eclipse.abapgit.org/updatesite/)
 
 ### Download and Installation
 Use the abapGit plug-in to install the YY Data Service by executing the following steps:
@@ -37,12 +37,12 @@ If you have a simple data type such as a number or text, you get it directly bac
 ### Limitations
 Currently no support for objects (reference types), only simple data types, structures and tables. And it's not even guaranteed that it works for them as you might expect... It's sample code!
 
-## Known Issues
+### Known Issues
 As mentioned before, after cloning a abapGit repository some objects might not be active. Use the mass activation feature in ADT to activate those artifacts.  
 
-## How to obtain support
+### How to obtain support
 This project is provided "as-is": there is no guarantee that raised issues will be answered or addressed in future releases.
 
-## License
+### License
 Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
 This project is licensed under the SAP Sample Code License except as noted otherwise in the [LICENSE](LICENSE) file.
