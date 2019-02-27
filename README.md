@@ -40,9 +40,6 @@ Currently no support for objects (reference types), only simple data types, stru
 ### Known Issues
 As mentioned before, after cloning a abapGit repository some objects might not be active. Use the mass activation feature in ADT to activate those artifacts.  
 
-### How to obtain support
-This project is provided "as-is": there is no guarantee that raised issues will be answered or addressed in future releases.
-
 ### License
 Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
 This project is licensed under the SAP Sample Code License except as noted otherwise in the [LICENSE](LICENSE) file.
