@@ -8,15 +8,16 @@ CLASS zcl_yy_data_element_table DEFINITION
     CLASS-METHODS: create_instance RETURNING VALUE(r_data_element) TYPE REF TO zcl_yy_data_element_table.
   PROTECTED SECTION.
   PRIVATE SECTION.
-    METHODS: constructor,
-      build_descriptor.
+    METHODS:
+      constructor,
+      build_descriptor IMPORTING i_current_name TYPE string.
     DATA: my_value      TYPE zif_yy_data_element=>ty_table,
           my_descriptor TYPE REF TO zif_yy_data_descriptor.
 ENDCLASS.
 
 
 
-CLASS ZCL_YY_DATA_ELEMENT_TABLE IMPLEMENTATION.
+CLASS zcl_yy_data_element_table IMPLEMENTATION.
 
 
   METHOD build_descriptor.
@@ -44,15 +45,20 @@ CLASS ZCL_YY_DATA_ELEMENT_TABLE IMPLEMENTATION.
         ENDLOOP.
       ELSE.
         " We assume a list of simple elements, therefore taking the first one... :)
-        my_descriptor = zcl_yy_data_struct_descriptor=>create_instance( i_name                 = zif_yy_data_descriptor=>co_unnamed_object
+        ADD 1 TO current_index.
+        CLEAR: structure_element_descriptor.
+        structure_element_descriptor-index   = current_index.
+        structure_element_descriptor-element = value_element-element->get_descriptor( ).
+        INSERT structure_element_descriptor INTO TABLE structure_descriptor.
+        my_descriptor = zcl_yy_data_struct_descriptor=>create_instance( i_name                 = structure_element_descriptor-element->get_name( )
                                                                         i_type                 = zcl_yy_data_element_type=>create_instance( i_type_name = zif_yy_data_element_type=>table )
-                                                                        i_structure_descriptor = CAST zif_yy_data_struct_descriptor( element_descriptor )->get_structure( ) ).
-        EXIT.
+                                                                        i_structure_descriptor = structure_descriptor ).
+        RETURN.
       ENDIF.
     ENDLOOP.
 
     IF structure_descriptor IS NOT INITIAL.
-      my_descriptor = zcl_yy_data_struct_descriptor=>create_instance( i_name                 = zif_yy_data_descriptor=>co_unnamed_object
+      my_descriptor = zcl_yy_data_struct_descriptor=>create_instance( i_name                 = i_current_name
                                                                       i_type                 = zcl_yy_data_element_type=>create_instance( i_type_name = zif_yy_data_element_type=>table )
                                                                       i_structure_descriptor = structure_descriptor ).
     ENDIF.
@@ -114,11 +120,15 @@ CLASS ZCL_YY_DATA_ELEMENT_TABLE IMPLEMENTATION.
 
       ENDIF.
       IF current_node->type = if_sxml_node=>co_nt_element_close.
-        EXIT.
+        DATA(close_element) = CAST if_sxml_close_element( current_node ).
+        DATA(node_name) = close_element->if_sxml_named~qname-name.
+        IF node_name = zif_yy_data_element_type=>table.
+          EXIT.
+        ENDIF.
       ENDIF.
     ENDDO.
 
-    build_descriptor( ).
+    build_descriptor( i_current_name = i_element_name ).
 
   ENDMETHOD.
 
