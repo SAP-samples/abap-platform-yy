@@ -8,7 +8,11 @@ CLASS zcl_yy_data_element_structure DEFINITION
     CLASS-METHODS: create_instance RETURNING VALUE(r_data_element) TYPE REF TO zcl_yy_data_element_structure.
   PROTECTED SECTION.
   PRIVATE SECTION.
-    METHODS: constructor.
+    METHODS:
+      constructor,
+      append_structure_descriptor IMPORTING i_current_index        TYPE i
+                                            i_current_data_element TYPE REF TO zif_yy_data_element
+                                  CHANGING  c_structure_descriptor TYPE zif_yy_data_descriptor=>ty_structure_descriptor.
     DATA: my_value      TYPE zif_yy_data_element=>ty_structure,
           my_descriptor TYPE REF TO zcl_yy_data_struct_descriptor.
     CONSTANTS: co_reference_identifier TYPE string VALUE '%ref'.
@@ -16,7 +20,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_YY_DATA_ELEMENT_STRUCTURE IMPLEMENTATION.
+CLASS zcl_yy_data_element_structure IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -31,12 +35,11 @@ CLASS ZCL_YY_DATA_ELEMENT_STRUCTURE IMPLEMENTATION.
 
   METHOD zif_yy_data_element_builder~build.
 
-    DATA: current_data_element       TYPE REF TO zif_yy_data_element,
-          current_name               TYPE string,
-          current_index              TYPE i VALUE 0,
-          current_structure_element  TYPE zif_yy_data_element=>ty_structure_element,
-          current_element_descriptor TYPE zif_yy_data_descriptor=>ty_struct_element_descriptor,
-          structure_descriptor       TYPE zif_yy_data_descriptor=>ty_structure_descriptor.
+    DATA: current_data_element TYPE REF TO zif_yy_data_element,
+          current_name         TYPE string,
+          current_index        TYPE i VALUE 0,
+          structure_descriptor TYPE zif_yy_data_descriptor=>ty_structure_descriptor,
+          is_open              TYPE abap_bool.
 
     CLEAR: my_value, my_descriptor.
 
@@ -46,6 +49,12 @@ CLASS ZCL_YY_DATA_ELEMENT_STRUCTURE IMPLEMENTATION.
         RETURN.
       ENDIF.
       IF current_node->type = if_sxml_node=>co_nt_element_open.
+        IF is_open = abap_true.
+          append_structure_descriptor( EXPORTING i_current_index        = current_index
+                                                 i_current_data_element = current_data_element
+                                       CHANGING  c_structure_descriptor = structure_descriptor ).
+        ENDIF.
+        is_open = abap_true.
         ADD 1 TO current_index.
         IF i_data_reader->value IS INITIAL.
           current_name = i_element_name.
@@ -71,15 +80,13 @@ CLASS ZCL_YY_DATA_ELEMENT_STRUCTURE IMPLEMENTATION.
                                                                          i_element_name = current_name ).
       ENDIF.
       IF current_node->type = if_sxml_node=>co_nt_element_close.
+        is_open = abap_false.
         IF current_data_element IS NOT BOUND.
           RETURN.
         ENDIF.
-        current_structure_element-index   = current_index.
-        current_structure_element-element = current_data_element.
-        INSERT current_structure_element INTO TABLE my_value.
-        current_element_descriptor-index   = current_index.
-        current_element_descriptor-element = current_data_element->get_descriptor( ).
-        INSERT current_element_descriptor INTO TABLE structure_descriptor.
+        append_structure_descriptor( EXPORTING i_current_index        = current_index
+                                               i_current_data_element = current_data_element
+                                     CHANGING  c_structure_descriptor = structure_descriptor ).
         IF i_data_reader->name = zif_yy_data_element_type=>structure.
           EXIT.
         ENDIF.
@@ -101,4 +108,23 @@ CLASS ZCL_YY_DATA_ELEMENT_STRUCTURE IMPLEMENTATION.
   METHOD zif_yy_data_element~get_value.
     e_value = my_value.
   ENDMETHOD.
+
+
+  METHOD append_structure_descriptor.
+
+    DATA: current_structure_element  TYPE zif_yy_data_element=>ty_structure_element,
+          current_element_descriptor TYPE zif_yy_data_descriptor=>ty_struct_element_descriptor.
+
+    IF i_current_data_element IS NOT BOUND.
+      RETURN.
+    ENDIF.
+    current_structure_element-index   = i_current_index.
+    current_structure_element-element = i_current_data_element.
+    INSERT current_structure_element INTO TABLE my_value.
+    current_element_descriptor-index   = i_current_index.
+    current_element_descriptor-element = i_current_data_element->get_descriptor( ).
+    INSERT current_element_descriptor INTO TABLE c_structure_descriptor.
+
+  ENDMETHOD.
+
 ENDCLASS.
