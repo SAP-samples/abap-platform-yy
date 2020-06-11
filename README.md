@@ -1,9 +1,16 @@
 # YY Data Service
 
+<hr />
+
+**Attention: This is sample code!** 
+
+This repository contains sample code which should not be used in production. It only shows the capabilities of [APACK - the ABAP package and dependency manager](https://blogs.sap.com/2019/05/06/introducing-apack-a-package-and-dependency-manager-for-abap/).
+
+<hr />
+
 **A Poor Man's RTTI for the ABAP Environment on SAP Cloud Platform**
 
-The ABAP Environment on the SAP Cloud Platform comes with certain restrictions - which apply both to the language (we have a new, reduced ABAP language version 5) and the available libraries which were usually available to custom code on any ABAP platform. A whitelist contains the only objects which can be used in this environment. Though this whitelist will grow over time, there is still functionality missing for important features - one of them is Runtime Type Information (RTTI).
-This small library - called the YY Data Service - tries to make at least a small bit of RTTI available to custom programs on an ABAP system running on the SAP Cloud Platform
+This small library - called the YY Data Service - is an alternative approach towards RTTI on an ABAP system running on the SAP Cloud Platform. Keep in mind that this is just a demo. In production, you better use the officially supported RTTI...
 
 ## Prerequisites
 Please make sure to fulfill the following requirements:
