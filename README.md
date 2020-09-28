@@ -1,5 +1,7 @@
 # YY Data Service
 
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/abap-platform-yy)](https://api.reuse.software/info/github.com/SAP-samples/abap-platform-yy)
+
 <hr />
 
 **Attention: This is sample code!** 
